@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RuneScape Dailies</title>
+
+    <style type="text/css">
+        html {
+            background-image: url("bg.png");
+        }
+
+        input {
+            transform: scale(1.5);
+        }
+
+        a, html {
+            font-size: 24px;
+            color: white;
+        }
+
+        table {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        th {
+            font-weight: bold;
+            font-size: 28px;
+        }
+
+        td {
+            padding: 5px 20px;
+        }
+
+        .combat {
+            color: red;
+        }
+
+        .xp {
+            color: aqua;
+        }
+
+        .money {
+            color: green;
+        }
+    </style>
+
+    <script type="text/javascript">
+	        window.onload = function () {
+        const now = new Date();
+        const next = new Date();
+
+        next.setUTCMilliseconds(0);
+        next.setUTCSeconds(0);
+        next.setUTCMinutes(0);
+        next.setUTCHours(0);
+        next.setUTCDate(now.getUTCDate() + 1);
+
+        if (next.getTime() != parseInt(window.localStorage.getItem("day"))) {
+            reset("daily");
+        }
+
+        window.localStorage.setItem("day", next.getTime());
+
+        let daily = next.getTime() - now.getTime();
+
+        next.setUTCFullYear(now.getUTCFullYear());
+        next.setUTCMonth(now.getUTCMonth());
+
+        while (next.getUTCDay() !== 3) {
+            next.setUTCDate(next.getUTCDate() + 1);
+        }
+
+        if (next.getTime() !== parseInt(window.localStorage.getItem("week"))) {
+            reset("weekly");
+        }
+
+        window.localStorage.setItem("week", next.getTime());
+
+        let weekly = next.getTime() - now.getTime();
+
+        next.setUTCMonth(now.getUTCMonth());
+        next.setUTCDate(0);
+
+        if (next.getUTCMonth() === 11) {
+            next.setUTCMonth(0);
+            next.setUTCFullYear(next.getUTCFullYear() + 1);
+        } else {
+            next.setUTCMonth(next.getUTCMonth() + 1);
+        }
+
+        if (next.getTime() !== parseInt(window.localStorage.getItem("month"))) {
+            reset("monthly");
+        }
+
+        window.localStorage.setItem("month", next.getTime());
+
+        let monthly = next.getTime() - now.getTime();
+
+        setInterval(function () {
+            daily -= 1000;
+            weekly -= 1000;
+            monthly -= 1000;
+
+            if (daily <= 0) {
+                reset("daily");
+                daily = 86400000;
+            }
+
+            if (weekly <= 0) {
+                reset("weekly");
+                weekly = 604800000;
+            }
+
+            if (monthly <= 0) {
+                reset("monthly");
+                monthly = 2592000000;
+            }
+
+            document.getElementById("daily").innerHTML = "Daily - " + msToTime(daily);
+            document.getElementById("weekly").innerHTML = "Weekly - " + msToTime(weekly);
+            document.getElementById("monthly").innerHTML = "Monthly - " + msToTime(monthly);
+        }, 1000);
+
+            for (const key in window.localStorage) {
+                const element = document.getElementById(key);
+
+                if (element != null) {
+                    element.checked = true;
+                }
+            }
+        };
+
+        function toggle(id) {
+            if (window.localStorage.getItem(id) != null) {
+                window.localStorage.removeItem(id);
+            } else {
+                window.localStorage.setItem(id, "");
+            }
+        }
+
+        function reset(type) {
+            const types = document.getElementsByClassName(type);
+
+            for (let i = 0; i < types.length; i++) {
+                window.localStorage.removeItem(types[i].id);
+                types[i].checked = false;
+            }
+        }
+
+        function msToTime(millis) {
+            const seconds = millis / 1000;
+            const minutes = seconds / 60;
+            const hours = minutes / 60;
+            const days = hours / 24;
+
+            let time = "";
+
+            if (hours >= 24) {
+                time += Math.floor(days) + ":";
+            }
+
+            if (minutes >= 60) {
+                time += Math.floor(hours % 24) + ":";
+            }
+
+            return time + Math.floor(minutes % 60) + ":" + Math.floor(seconds % 60);
+        }
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <th id="daily"></th>
+        <th id="weekly"></th>
+        <th id="monthly"></th>
+    </tr>
+    <tr>
+        <td class="combat"><input type="checkbox" class="daily" id="bork" onchange="toggle(this.id)"> Kill Bork</td>
+        <td class="combat"><input type="checkbox" class="weekly" id="rush" onchange="toggle(this.id)"> Rush of Blood</td>
+        <td class="combat"><input type="checkbox" class="monthly" id="troll" onchange="toggle(this.id)"> Troll Invasion</td>
+
+    </tr>
+    <tr>
+        <td class="combat"><input type="checkbox" class="daily" id="phoen" onchange="toggle(this.id)"> Kill Phoenix</td>
+        <td class="combat"><input type="checkbox" class="weekly" id="agor" onchange="toggle(this.id)"> Agoroth</td>
+        <td class="xp"><input type="checkbox" class="monthly" id="oys" onchange="toggle(this.id)"> Oyster</td>
+    </tr>
+    <tr>
+        <td class="combat"><input type="checkbox" class="daily" id="jade" onchange="toggle(this.id)"> Jade Vine</td>
+        <td class="combat"><input type="checkbox" class="weekly" id="champ" onchange="toggle(this.id)"> Champion's Guild</td>
+        <td class="xp"><input type="checkbox" class="monthly" id="gods" onchange="toggle(this.id)"> God Statues</td>
+    </tr>
+    <tr>
+        <td class="xp"><input type="checkbox" class="daily" id="cryst" onchange="toggle(this.id)"> Crystal-Flecked Sandstone</td>
+        <td class="combat"><input type="checkbox" class="weekly" id="skelet" onchange="toggle(this.id)"> Skeletal Horror</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="xp"><input type="checkbox" class="daily" id="reds" onchange="toggle(this.id)"> Red Sandstone</td>
+        <td><input type="checkbox" class="weekly" id="pengs" onchange="toggle(this.id)"> <a class="xp" target="_blank" href="http://jq.world60pengs.com/">Penguins</a></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="xp"><input type="checkbox" class="daily" id="div" onchange="toggle(this.id)"> Divination Popups</td>
+        <td class="xp"><input type="checkbox" class="weekly" id="circ" onchange="toggle(this.id)"> Circus</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="xp"><input type="checkbox" class="daily" id="runes" onchange="toggle(this.id)"> Wicked Hood, Quiver - Blood & Death runes</td>
+        <td><input type="checkbox" class="weekly" id="meg" onchange="toggle(this.id)"> <a  class="xp" href="https://runescape.wiki/w/Meg">Meg</a></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><input type="checkbox" class="daily" id="jot" onchange="toggle(this.id)">
+            <a class="xp" target="_blank" href="https://runescape.fandom.com/wiki/Legendary_jack_of_trades_aura">Jack of Trades</a>
+        </td>
+        <td class="xp"><input type="checkbox" class="weekly" id="wisps" onchange="toggle(this.id)"> Wisps of the grove (fairy ring b-j-s)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="xp"><input type="checkbox" class="daily" id="agil" onchange="toggle(this.id)"> Serenity Agility Posts</td>
+        <td class="xp"><input type="checkbox" class="weekly" id="clan" onchange="toggle(this.id)"> Clan Citadel</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><input type="checkbox" class="daily" id="vis" onchange="toggle(this.id)"> <a class="money" target="_blank" href="https://warbandtracker.com/goldberg/">Vis Wax</a></td>
+        <td class="xp"><input type="checkbox" class="weekly" id="tears" onchange="toggle(this.id)"> Tears of Guthix</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="money"><input type="checkbox" class="daily" id="ess" onchange="toggle(this.id)"> Wizard Comperty - Pure Essence</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="money"><input type="checkbox" class="daily" id="heads" onchange="toggle(this.id)"> Headgear Items - Coal, Shards, Chronicles, Clay</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="money"><input type="checkbox" class="daily" id="flax" onchange="toggle(this.id)"> Geoffrey - Flax</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="money"><input type="checkbox" class="daily" id="yak" onchange="toggle(this.id)"> Jetizo - Yak Hide</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><input type="checkbox" class="daily" id="magics" onchange="toggle(this.id)">
+            <a class="money" target="_blank" href="https://runescape.fandom.com/wiki/Magic_shops">Magic Shops</a>
+        </td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="money"><input type="checkbox" class="daily" id="feath" onchange="toggle(this.id)"> Shilo Village - Feathers & Vials</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="money"><input type="checkbox" class="daily" id="old" onchange="toggle(this.id)"> Old Man - Potato Cactus</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="money"><input type="checkbox" class="daily" id="lost" onchange="toggle(this.id)"> Rug Merchant - Lost & Found</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="money"><input type="checkbox" class="daily" id="sand" onchange="toggle(this.id)"> Bert, Yanille - Buckets of Sand</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><input type="checkbox" class="daily" id="arc" onchange="toggle(this.id)"> The Arc supplies</td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+</body>
+</html>
