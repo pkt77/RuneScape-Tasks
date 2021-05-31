@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>RuneScape Dailies</title>
 
-    <style type="text/css">
+    <style>
         html {
             background-image: url("bg.png");
         }
@@ -46,81 +46,80 @@
     </style>
 
     <script type="text/javascript">
-	        window.onload = function () {
-        const now = new Date();
-        const next = new Date();
+        window.onload = function () {
+            const now = new Date();
+            const next = new Date();
 
-        next.setUTCMilliseconds(0);
-        next.setUTCSeconds(0);
-        next.setUTCMinutes(0);
-        next.setUTCHours(0);
-        next.setUTCDate(now.getUTCDate() + 1);
+            // Set next to 0 of the next UTC day
+            next.setUTCMilliseconds(0);
+            next.setUTCSeconds(0);
+            next.setUTCMinutes(0);
+            next.setUTCHours(0);
+            next.setUTCDate(now.getUTCDate() + 1);
 
-        if (next.getTime() != parseInt(window.localStorage.getItem("day"))) {
-            reset("daily");
-        }
-
-        window.localStorage.setItem("day", next.getTime());
-
-        let daily = next.getTime() - now.getTime();
-
-        next.setUTCFullYear(now.getUTCFullYear());
-        next.setUTCMonth(now.getUTCMonth());
-
-        while (next.getUTCDay() !== 3) {
-            next.setUTCDate(next.getUTCDate() + 1);
-        }
-
-        if (next.getTime() !== parseInt(window.localStorage.getItem("week"))) {
-            reset("weekly");
-        }
-
-        window.localStorage.setItem("week", next.getTime());
-
-        let weekly = next.getTime() - now.getTime();
-
-        next.setUTCMonth(now.getUTCMonth());
-        next.setUTCDate(0);
-
-        if (next.getUTCMonth() === 11) {
-            next.setUTCMonth(0);
-            next.setUTCFullYear(next.getUTCFullYear() + 1);
-        } else {
-            next.setUTCMonth(next.getUTCMonth() + 1);
-        }
-
-        if (next.getTime() !== parseInt(window.localStorage.getItem("month"))) {
-            reset("monthly");
-        }
-
-        window.localStorage.setItem("month", next.getTime());
-
-        let monthly = next.getTime() - now.getTime();
-
-        setInterval(function () {
-            daily -= 1000;
-            weekly -= 1000;
-            monthly -= 1000;
-
-            if (daily <= 0) {
+            if (next.getTime() != parseInt(window.localStorage.getItem("day"))) {
                 reset("daily");
-                daily = 86400000;
             }
 
-            if (weekly <= 0) {
+            window.localStorage.setItem("day", next.getTime());
+
+            let daily = next.getTime() - now.getTime();
+
+            while (next.getUTCDay() !== 3) {
+                next.setUTCDate(next.getUTCDate() + 1);
+            }
+
+            if (next.getTime() !== parseInt(window.localStorage.getItem("week"))) {
                 reset("weekly");
-                weekly = 604800000;
             }
 
-            if (monthly <= 0) {
+            window.localStorage.setItem("week", next.getTime());
+
+            let weekly = next.getTime() - now.getTime();
+
+            next.setUTCMonth(now.getUTCMonth());
+
+            if (next.getUTCMonth() === 11) {
+                next.setUTCMonth(1);
+                next.setUTCFullYear(next.getUTCFullYear() + 1);
+            } else {
+                next.setUTCMonth(next.getUTCMonth() + 1);
+            }
+
+            next.setUTCDate(1);
+
+            if (next.getTime() !== parseInt(window.localStorage.getItem("month"))) {
                 reset("monthly");
-                monthly = 2592000000;
             }
 
-            document.getElementById("daily").innerHTML = "Daily - " + msToTime(daily);
-            document.getElementById("weekly").innerHTML = "Weekly - " + msToTime(weekly);
-            document.getElementById("monthly").innerHTML = "Monthly - " + msToTime(monthly);
-        }, 1000);
+            window.localStorage.setItem("month", next.getTime());
+
+            let monthly = next.getTime() - now.getTime();
+
+            setInterval(function () {
+                daily -= 1000;
+                weekly -= 1000;
+                monthly -= 1000;
+
+                if (daily <= 0) {
+                    reset("daily");
+                    daily = 86400000;
+                }
+
+                if (weekly <= 0) {
+                    reset("weekly");
+                    weekly = 604800000;
+                }
+
+                if (monthly <= 0) {
+                    reset("monthly");
+                    monthly = 2592000000;
+                }
+
+                document.getElementById("daily").innerHTML = "Daily - " + msToTime(daily);
+                document.getElementById("weekly").innerHTML = "Weekly - " + msToTime(weekly);
+                document.getElementById("monthly").innerHTML = "Monthly - " + msToTime(monthly);
+            }, 1000);
 
             for (const key in window.localStorage) {
                 const element = document.getElementById(key);
@@ -208,7 +207,7 @@
     </tr>
     <tr>
         <td class="xp"><input type="checkbox" class="daily" id="runes" onchange="toggle(this.id)"> Wicked Hood, Quiver - Blood & Death runes</td>
-        <td><input type="checkbox" class="weekly" id="meg" onchange="toggle(this.id)"> <a  class="xp" href="https://runescape.wiki/w/Meg">Meg</a></td>
+        <td><input type="checkbox" class="weekly" id="meg" onchange="toggle(this.id)"> <a class="xp" href="https://runescape.wiki/w/Meg">Meg</a></td>
         <td></td>
     </tr>
     <tr>
